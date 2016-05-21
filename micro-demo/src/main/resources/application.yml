@@ -1,0 +1,26 @@
+# 端口，固定的
+server:
+      port: 8080
+# spring 配置
+spring:
+    datasource:
+        name: test
+        url: jdbc:mysql://120.25.251.106:3306/advisor
+        username: advisor
+        password: 123456
+        # druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
