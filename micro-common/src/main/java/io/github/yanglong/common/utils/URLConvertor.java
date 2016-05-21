@@ -30,16 +30,16 @@ public class URLConvertor {
      */
     public static String nodeNameToUrl(final String nodeName) {
         //去除路径第一个“/”
-        String url = nodeName.substring(1, nodeName.length());
+        String url = nodeName.startsWith("/") ? nodeName.substring(1, nodeName.length()) : nodeName;
         url = url.replace(".", "/");
         url = url.replace("-", ".");
         return url;
     }
 
     public static void main(String args[]) {
-        String url="/test/hello/";
-        String nodeName=urlToNodeName(url);
-        String covert=nodeNameToUrl(nodeName);
+        String url = "/test/hello/";
+        String nodeName = urlToNodeName(url);
+        String covert = nodeNameToUrl(nodeName);
         System.out.print(url.equals(covert));
     }
 }
