@@ -9,18 +9,20 @@ import java.util.LinkedHashSet;
 import java.util.concurrent.*;
 
 /**
- * functional describe:
+ * functional describe:监听器，负责监听zk事件，并维护服务提供者列表
  *
  * @author DR.YangLong [410357434@163.com]
  * @version 1.0    16-5-30
  */
-public class RemoteServerHandler implements PathChildrenHandler {
+public class RemoteProviderHandler implements PathChildrenHandler {
+    //监听的服务节点URL
+    private String serviceNode;
     //URL和远程服务地址映射
     private ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade;
     //新增节点队列
-    private ConcurrentLinkedQueue<ChildData> addBasket=new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<ChildData> addBasket = new ConcurrentLinkedQueue<>();
     //删除节点队列
-    private ConcurrentLinkedQueue<ChildData> removeBasket=new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<ChildData> removeBasket = new ConcurrentLinkedQueue<>();
     //新增线程池
     private Executor addExecutor = Executors.newFixedThreadPool(2);
     //删除线程池
@@ -33,13 +35,14 @@ public class RemoteServerHandler implements PathChildrenHandler {
         if (PathChildrenCacheEvent.Type.CHILD_ADDED.equals(notifyType)) {
             //新节点创建，有新的provider加入
             //使用并发队列，处理事件通知
-            ChildData data=event.getData();
+            ChildData data = event.getData();
             addBasket.add(data);
-
-
+            addExecutor.execute(new AddProvider());
         } else if (PathChildrenCacheEvent.Type.CHILD_REMOVED.equals(notifyType)) {
             //节点删除，有provider离线
-
+            ChildData data = event.getData();
+            removeBasket.add(data);
+            removeExecutor.execute(new RemoveProvider());
         } else if (PathChildrenCacheEvent.Type.CHILD_UPDATED.equals(notifyType)) {
             //节点更新，provider的描述更新
             //do nothing now
@@ -57,34 +60,27 @@ public class RemoteServerHandler implements PathChildrenHandler {
     }
 
 
-    class RemoveProvider implements Runnable{
-        private ConcurrentLinkedQueue<ChildData> addBasket;
-        private ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade;
-
+    private class RemoveProvider implements Runnable {
         @Override
         public void run() {
-
-
-        }
-
-        public RemoveProvider(ConcurrentLinkedQueue<ChildData> addBasket, ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade) {
-            this.addBasket = addBasket;
-            this.urlMappingNade = urlMappingNade;
+            ChildData childData = addBasket.poll();
+            String node = childData.getPath();
+            urlMappingNade.get(serviceNode).remove(node);
         }
     }
 
-    class AddProvider implements Runnable{
-        private ConcurrentLinkedQueue<ChildData> removeBasket;
-        private ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade;
-
+    private class AddProvider implements Runnable {
         @Override
         public void run() {
-
+            ChildData childData = addBasket.poll();
+            String node = childData.getPath();
+            urlMappingNade.get(serviceNode).add(node);
         }
 
-        public AddProvider(ConcurrentLinkedQueue<ChildData> removeBasket, ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade) {
-            this.removeBasket = removeBasket;
-            this.urlMappingNade = urlMappingNade;
-        }
+    }
+
+    public RemoteProviderHandler(String serviceNode, ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade) {
+        this.serviceNode = serviceNode;
+        this.urlMappingNade = urlMappingNade;
     }
 }
