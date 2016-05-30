@@ -6,7 +6,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 
 import java.util.LinkedHashSet;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * functional describe:监听器，负责监听zk事件，并维护服务提供者列表
@@ -19,14 +19,6 @@ public class RemoteProviderHandler implements PathChildrenHandler {
     private String serviceNode;
     //URL和远程服务地址映射
     private ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade;
-    //新增节点队列
-    private ConcurrentLinkedQueue<ChildData> addBasket = new ConcurrentLinkedQueue<>();
-    //删除节点队列
-    private ConcurrentLinkedQueue<ChildData> removeBasket = new ConcurrentLinkedQueue<>();
-    //新增线程池
-    private Executor addExecutor = Executors.newFixedThreadPool(2);
-    //删除线程池
-    private Executor removeExecutor = Executors.newFixedThreadPool(2);
 
     @Override
     public void childrenChanged(PathChildrenCache pathChildrenCache, PathChildrenCacheEvent event) {
@@ -36,13 +28,13 @@ public class RemoteProviderHandler implements PathChildrenHandler {
             //新节点创建，有新的provider加入
             //使用并发队列，处理事件通知
             ChildData data = event.getData();
-            addBasket.add(data);
-            addExecutor.execute(new AddProvider());
+            String node = data.getPath();
+            urlMappingNade.get(serviceNode).add(node);
         } else if (PathChildrenCacheEvent.Type.CHILD_REMOVED.equals(notifyType)) {
             //节点删除，有provider离线
             ChildData data = event.getData();
-            removeBasket.add(data);
-            removeExecutor.execute(new RemoveProvider());
+            String node = data.getPath();
+            urlMappingNade.get(serviceNode).remove(node);
         } else if (PathChildrenCacheEvent.Type.CHILD_UPDATED.equals(notifyType)) {
             //节点更新，provider的描述更新
             //do nothing now
@@ -57,26 +49,6 @@ public class RemoteProviderHandler implements PathChildrenHandler {
         } else if (PathChildrenCacheEvent.Type.CONNECTION_SUSPENDED.equals(notifyType)) {
             //do nothing
         }
-    }
-
-
-    private class RemoveProvider implements Runnable {
-        @Override
-        public void run() {
-            ChildData childData = addBasket.poll();
-            String node = childData.getPath();
-            urlMappingNade.get(serviceNode).remove(node);
-        }
-    }
-
-    private class AddProvider implements Runnable {
-        @Override
-        public void run() {
-            ChildData childData = addBasket.poll();
-            String node = childData.getPath();
-            urlMappingNade.get(serviceNode).add(node);
-        }
-
     }
 
     public RemoteProviderHandler(String serviceNode, ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade) {
