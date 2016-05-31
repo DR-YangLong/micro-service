@@ -16,8 +16,10 @@ public class URLConvertor {
      * @return node名称
      */
     public static String urlToNodeName(final String url) {
-        String nodeName = url.replace(".", "-");
-        nodeName = nodeName.replace("/", ".");
+        String nodeName =url.startsWith("/")?url:"/"+url;
+        //将url链接中的"."转换成"-"，"/"转换成"."。
+        nodeName=nodeName.replace(".", "-").replace("/", ".");
+        //生成zk节点名称
         nodeName = "/" + nodeName;
         return nodeName;
     }
@@ -29,10 +31,10 @@ public class URLConvertor {
      * @return url
      */
     public static String nodeNameToUrl(final String nodeName) {
-        //去除路径第一个“/”
+        //传入zk的节点名称，去除路径第一个“/”
         String url = nodeName.startsWith("/") ? nodeName.substring(1, nodeName.length()) : nodeName;
-        url = url.replace(".", "/");
-        url = url.replace("-", ".");
+        //将节点名称中的"."换成"/"，"-"换成"."，还原url
+        url = url.replace(".", "/").replace("-", ".");
         return url;
     }
 

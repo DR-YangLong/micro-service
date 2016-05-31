@@ -5,8 +5,12 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * functional describe:监听器，负责监听zk事件，并维护服务提供者列表
@@ -18,7 +22,7 @@ public class RemoteProviderHandler implements PathChildrenHandler {
     //监听的服务节点URL
     private String serviceNode;
     //URL和远程服务地址映射
-    private ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade;
+    private ConcurrentHashMap<String, Vector<String>> urlMappingNode;
 
     @Override
     public void childrenChanged(PathChildrenCache pathChildrenCache, PathChildrenCacheEvent event) {
@@ -29,18 +33,22 @@ public class RemoteProviderHandler implements PathChildrenHandler {
             //使用并发队列，处理事件通知
             ChildData data = event.getData();
             String node = data.getPath();
-            urlMappingNade.get(serviceNode).add(node);
+            urlMappingNode.get(serviceNode).add(node);
         } else if (PathChildrenCacheEvent.Type.CHILD_REMOVED.equals(notifyType)) {
             //节点删除，有provider离线
             ChildData data = event.getData();
             String node = data.getPath();
-            urlMappingNade.get(serviceNode).remove(node);
+            urlMappingNode.get(serviceNode).remove(node);
         } else if (PathChildrenCacheEvent.Type.CHILD_UPDATED.equals(notifyType)) {
             //节点更新，provider的描述更新
             //do nothing now
         } else if (PathChildrenCacheEvent.Type.INITIALIZED.equals(notifyType)) {
-            //do nothing
-
+            //初始化，获取当前已经有的节点信息
+            List<ChildData> childDataList = pathChildrenCache.getCurrentData();
+            List<String> serverAddress = childDataList.stream().map(childData -> childData.getPath()).map(nodePath -> nodePath.startsWith("/") ? nodePath.substring(1, nodePath.length()) : nodePath).collect(Collectors.toList());
+            Collections.shuffle(serverAddress);
+            Vector<String> addrList = new Vector<>(serverAddress);
+            urlMappingNode.put(serviceNode, addrList);
         } else if (PathChildrenCacheEvent.Type.CONNECTION_LOST.equals(notifyType)) {
             //do nothing
 
@@ -51,8 +59,8 @@ public class RemoteProviderHandler implements PathChildrenHandler {
         }
     }
 
-    public RemoteProviderHandler(String serviceNode, ConcurrentHashMap<String, LinkedHashSet<String>> urlMappingNade) {
+    public RemoteProviderHandler(String serviceNode, ConcurrentHashMap<String, Vector<String>> urlMappingNode) {
         this.serviceNode = serviceNode;
-        this.urlMappingNade = urlMappingNade;
+        this.urlMappingNode = urlMappingNode;
     }
 }

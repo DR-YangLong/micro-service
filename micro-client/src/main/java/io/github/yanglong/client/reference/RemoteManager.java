@@ -1,14 +1,24 @@
 package io.github.yanglong.client.reference;
 
 import io.github.yanglong.client.config.CallServiceConfig;
+import io.github.yanglong.client.listen.RemoteProviderHandler;
+import io.github.yanglong.common.client.ZkDao;
+import io.github.yanglong.common.utils.URLConvertor;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.URLEditor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * functional describe:
@@ -19,24 +29,42 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class RemoteManager {
+    private static final Logger logger= LoggerFactory.getLogger(RemoteManager.class);
     //需要使用的所有远程服务名称列表
-    private HashSet<String> serviceNames;
+    private HashSet<String> serviceNames=new HashSet<>();
     //服务url和远程服务地址映射
-    private ConcurrentHashMap<String,LinkedHashSet<String>> urlMappingNade;
+    private ConcurrentHashMap<String,Vector<String>> urlMappingNode=new ConcurrentHashMap<>(8);
     @Autowired
     private CallServiceConfig callServiceConfig;
+    @Autowired
+    private ZkDao zkDao;
+    //注册监听
+    private ExecutorService executor=Executors.newFixedThreadPool(4);
 
     /**
      * 初始化
      */
     @PostConstruct
-    public void init(){
+    public void init() throws Exception{
         //获取配置
         //从配置中获取请求链接映射,清洗不符合标准的url
-        //根据请求链接到zk中获取服务提供者地址使用异步多线程
-        //   1.转换为节点名称
-        //   2.加监听器
-        //   3.获取当前服务提供者
+        ConcurrentHashMap<String,String> nameMapping=callServiceConfig.getServiceRef();
+        nameMapping.forEach((key, val)->{
+            serviceNames.add(key);
+            val=val.startsWith("/")?val:"/"+val;
+            //   1.转换为节点名称
+            String nodeName= URLConvertor.urlToNodeName(val);
+            //更新不符合标准的节点
+            nameMapping.put(key,val);
+            //   2.加监听器
+            try {
+                zkDao.addChildWatcher(nodeName, PathChildrenCache.StartMode.POST_INITIALIZED_EVENT,true,new RemoteProviderHandler(val,urlMappingNode),executor);
+            }catch (Exception e){
+                logger.error("============添加监听器从远程获取provider列表出错,程序结束！================",e);
+                System.exit(1);
+            }
+            //   3.获取当前服务提供者---init事件中方法中
+        });
     }
 
 
@@ -50,7 +78,7 @@ public class RemoteManager {
         aborted=serviceNames.contains(serviceName);
         if(aborted){
             String url=callServiceConfig.getServiceRef().get(serviceName);
-            aborted=CollectionUtils.isEmpty(this.urlMappingNade.get(url));
+            aborted=CollectionUtils.isEmpty(this.urlMappingNode.get(url));
 
         }
         return  aborted;
@@ -73,7 +101,6 @@ public class RemoteManager {
      */
     public String getRemoteAddress(String serviceName){
         if(isAborted(serviceName))return null;
-        return this.urlMappingNade.get(serviceName).iterator().next();
+        return this.urlMappingNode.get(serviceName).iterator().next();
     }
-
 }
