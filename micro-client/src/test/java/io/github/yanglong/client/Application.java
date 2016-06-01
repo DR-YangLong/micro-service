@@ -7,6 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * package: springboot.simple <br/>
@@ -27,8 +28,9 @@ import org.springframework.context.annotation.ComponentScan;
  * @version 1.0    2016/3/13 13:49
  */
 @SpringBootApplication
-@ComponentScan("io.github.yanglong.client")
-public class Application{
+@ComponentScan("io.github.yanglong")
+@EnableWebMvc
+public class Application extends SpringBootServletInitializer{
     /**
      * 程序启动入口
      *
@@ -38,7 +40,6 @@ public class Application{
         System.out.println("*********************正在启动*********************************");
         //SpringApplication.run(springboot.simple.ServerStart.class,args);
         ConfigurableApplicationContext context=SpringApplication.run(Application.class, args);
-        CallServiceConfig ref=context.getBean(CallServiceConfig.class);
         System.out.println("*********************启动成功*********************************");
     }
 }

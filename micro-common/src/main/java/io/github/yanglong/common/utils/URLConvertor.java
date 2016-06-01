@@ -16,9 +16,9 @@ public class URLConvertor {
      * @return node名称
      */
     public static String urlToNodeName(final String url) {
-        String nodeName =url.startsWith("/")?url:"/"+url;
+        String nodeName = url.startsWith("/") ? url : "/" + url;
         //将url链接中的"."转换成"-"，"/"转换成"."。
-        nodeName=nodeName.replace(".", "-").replace("/", ".");
+        nodeName = nodeName.replace(".", "-").replace("/", ".");
         //生成zk节点名称
         nodeName = "/" + nodeName;
         return nodeName;
@@ -36,6 +36,18 @@ public class URLConvertor {
         //将节点名称中的"."换成"/"，"-"换成"."，还原url
         url = url.replace(".", "/").replace("-", ".");
         return url;
+    }
+
+
+    /**
+     * @param url  服务请求链接，对应监听的path的url形式
+     * @param path watcher事件中获取到的路径
+     * @return String 服务地址
+     */
+    public static String pathClean(final String url, final String path) {
+        String server = path.replace(URLConvertor.urlToNodeName(url), "");
+        server = server.startsWith("/") ? server.substring(1, server.length()) : server;
+        return server;
     }
 
     public static void main(String args[]) {
