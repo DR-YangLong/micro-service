@@ -1,6 +1,5 @@
 package io.github.yanglong.client;
 
-import io.github.yanglong.client.config.CallServiceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
