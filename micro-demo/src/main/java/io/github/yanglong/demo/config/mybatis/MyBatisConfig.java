@@ -1,6 +1,5 @@
 package io.github.yanglong.demo.config.mybatis;
 
-import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 import javax.sql.DataSource;
-import java.util.Properties;
 
 /**
  * package: springboot.simple.config <br/>
@@ -31,25 +29,20 @@ import java.util.Properties;
 public class MyBatisConfig implements TransactionManagementConfigurer{
     private static final Logger log= LoggerFactory.getLogger(MyBatisConfig.class);
     @Autowired
-    DataSource dataSource;
+    private DataSource dataSource;
+    private String typeAliasesPackage="io.github.yanglong.demo.model";
+    private String mapperLocations="classpath**:*/*Mapper.xml";
 
     @Bean(name = "sqlSessionFactory")
     public SqlSessionFactory sqlSessionFactoryBean() {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
-        bean.setTypeAliasesPackage("io.github.yanglong.demo.model");
-
-        //分页插件
-        Properties properties = new Properties();
-        properties.setProperty("reasonable", "true");
-        properties.setProperty("supportMethodsArguments", "true");
-        properties.setProperty("returnPageInfo", "check");
-        properties.setProperty("params", "count=countSql");
-
+        //设置实体类包位置
+        bean.setTypeAliasesPackage(typeAliasesPackage);
         //添加XML目录
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
-            bean.setMapperLocations(resolver.getResources("classpath*:**/mapper/*Mapper.xml"));
+            bean.setMapperLocations(resolver.getResources(mapperLocations));
             return bean.getObject();
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,5 +59,29 @@ public class MyBatisConfig implements TransactionManagementConfigurer{
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public String getTypeAliasesPackage() {
+        return typeAliasesPackage;
+    }
+
+    public void setTypeAliasesPackage(String typeAliasesPackage) {
+        this.typeAliasesPackage = typeAliasesPackage;
+    }
+
+    public String getMapperLocations() {
+        return mapperLocations;
+    }
+
+    public void setMapperLocations(String mapperLocations) {
+        this.mapperLocations = mapperLocations;
     }
 }

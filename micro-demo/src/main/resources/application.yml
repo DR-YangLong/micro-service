@@ -5,9 +5,9 @@ server:
 spring:
     datasource:
         name: test
-        url: jdbc:mysql://120.25.251.106:3306/advisor
-        username: advisor
-        password: *****
+        url: jdbc:mysql://192.168.1.199:3306/shiro
+        username: root
+        password: root
         # druid数据源
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
@@ -24,3 +24,37 @@ spring:
         testOnReturn: false
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
+
+freemarker:
+    templateLoaderPath: "classpath:/template"
+    properties:
+        - name: "auto_import"
+          value: "/common/commonMacros.ftl as macro"
+
+ftlviewcofing:
+    #静态工具配置
+    staticAttrabutes:
+        - name: "StringUtil"
+          value: "freemarker.template.utility.StringUtil"
+    #属性配置
+    attrabutes:
+        - name: ""
+          value: ""
+    cache: "false"
+    cacheLimit: "0"
+    suffix: ".ftl"
+    contentType: "text/html;charset=UTF-8"
+    requestContextAttribute: "request"
+    exposeSpringMacroHelpers: "true"
+    exposeRequestAttributes: "true"
+    exposeSessionAttributes: "true"
+    order: "0"
+mybatis:
+    #mapper接口包
+    basePackage: "io.github.yanglong.demo.dao"
+    #mapper接口注解类
+    annotationClass: "io.github.yanglong.demo.config.mybatis.MyBatisRepository"
+    #实体包
+    typeAliasesPackage: "io.github.yanglong.demo.model"
+    #mapper.xml位置
+    mapperLocations: "classpath*:*/mapper/*Mapper.xml"

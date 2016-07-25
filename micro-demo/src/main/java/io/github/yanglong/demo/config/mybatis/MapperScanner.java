@@ -2,8 +2,12 @@ package io.github.yanglong.demo.config.mybatis;
 
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.lang.annotation.Annotation;
 
 /**
  * package: springboot.simple.config <br/>
@@ -15,17 +19,39 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @AutoConfigureAfter(MyBatisConfig.class)
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = "mybatis")
 public class MapperScanner {
+    //mapper接口所在的包名
+    private String basePackage="io.github.yanglong.demo.dao";
+    //只有设置了此注解的接口才会被mybatis管理
+    private Class<? extends Annotation> annotationClass=MyBatisRepository.class;
 
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer(){
         MapperScannerConfigurer scanner = new MapperScannerConfigurer();
         //配置mapper接口所在的包
-        scanner.setBasePackage("io.github.yanglong.demo.dao");
+        scanner.setBasePackage(basePackage);
         //配置默认的sqlSessionFactory，与MyBatisConfig中配置的别名一致
         scanner.setSqlSessionFactoryBeanName("sqlSessionFactory");
         //配置只扫描某个注解的接口
-        //scanner.setAnnotationClass(MyBatisRepository.class);
+        scanner.setAnnotationClass(annotationClass);
         return scanner;
+    }
+
+    public String getBasePackage() {
+        return basePackage;
+    }
+
+    public void setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
+    }
+
+    public Class<? extends Annotation> getAnnotationClass() {
+        return annotationClass;
+    }
+
+    public void setAnnotationClass(Class<? extends Annotation> annotationClass) {
+        this.annotationClass = annotationClass;
     }
 }

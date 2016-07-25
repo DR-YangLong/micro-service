@@ -26,7 +26,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @EnableWebMvc
 @SpringBootApplication
-@ComponentScan("")
+//设置扫描包位置
+@ComponentScan("io.github.yanglong")
 public class Application {
 
     /**
