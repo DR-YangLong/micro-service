@@ -14,7 +14,6 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -26,7 +25,6 @@ import java.util.Map;
 import javax.servlet.Filter;
 
 import io.github.yanglong.demo.config.shiro.DrCredentialsMatcher;
-import io.github.yanglong.demo.config.shiro.authentication.RealmService;
 import io.github.yanglong.demo.config.shiro.authentication.ShiroRealm;
 
 /**
@@ -35,8 +33,6 @@ import io.github.yanglong.demo.config.shiro.authentication.ShiroRealm;
 @Configuration
 public class ShiroConfig {
     private static final Logger log = LoggerFactory.getLogger(ShiroConfig.class);
-    @Autowired
-    private RealmService realmService;
 
     @Bean
     public EhCacheManager getEhCacheManager() {
@@ -56,7 +52,6 @@ public class ShiroConfig {
     public ShiroRealm getShiroRealm() {
         ShiroRealm shiroRealm = new ShiroRealm();
         shiroRealm.setCacheManager(getEhCacheManager());
-        shiroRealm.setRealmService(realmService);
         return shiroRealm;
     }
 

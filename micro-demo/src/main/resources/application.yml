@@ -26,32 +26,31 @@ spring:
         testOnReturn: "false"
         poolPreparedStatements: "true"
         maxOpenPreparedStatements: "20"
-#freemarker设置
-freemarker:
-    templateLoaderPath: "/templates/"
-    properties:
-        auto_import: "/common/commonMacros.ftl as macro"
-        tag_syntax: "auto_detect"
-        template_update_delay: "0"
-        defaultEncoding: "UTF-8"
-        url_escaping_charset: "UTF-8"
-        locale: "zhCN"
-        date_format: "yyyy-MM-dd"
-        datetime_format: "yyyy-MM-dd HH:mm:ss"
-        time_format: "HH:mm:ss"
-        number_format: "0.######"
-        whitespace_stripping: "true"
-
+    freemarker:
+      template-loader-path: "classpath:templates"
+      settings:
+          auto_import: "/common/commonMacros.ftl as macro"
+          tag_syntax: "auto_detect"
+          template_update_delay: "0"
+          defaultEncoding: "UTF-8"
+          url_escaping_charset: "UTF-8"
+          locale: "zhCN"
+          date_format: "yyyy-MM-dd"
+          datetime_format: "yyyy-MM-dd HH:mm:ss"
+          time_format: "HH:mm:ss"
+          number_format: "0.######"
+          whitespace_stripping: "true"
+#freemarker视图属性及自定义宏设置
 ftlviewcofing:
     #静态工具配置
-    staticAttrabutes:
+    staticAttributes:
         StringUtil: "freemarker.templates.utility.StringUtil"
     #属性配置
-    #attrabutes:
+    #attributes:
         #name: value
     cache: "false"
     cacheLimit: "0"
-    prefix: "/"
+    prefix: ""
     suffix: ".ftl"
     contentType: "text/html;charset=UTF-8"
     requestContextAttribute: "request"
@@ -67,4 +66,4 @@ mybatis:
     #实体包
     typeAliasesPackage: "io.github.yanglong.demo.model"
     #mapper.xml位置
-    mapperLocations: "classpath*:*/mapper/*Mapper.xml"
+    mapperLocations: "classpath:/mapper/*Mapper.xml"

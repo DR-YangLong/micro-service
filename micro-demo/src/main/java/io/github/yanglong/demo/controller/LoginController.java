@@ -59,7 +59,7 @@ public class LoginController {
         Subject subject = SecurityUtils.getSubject();
         //如果已经登录,转向登录页面
         if (subject.isAuthenticated()) {
-            modelAndView.setViewName("/passport/center/index");
+            modelAndView.setViewName("index");
             return modelAndView;
         }
         username = username.trim();

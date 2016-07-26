@@ -1,14 +1,18 @@
 package io.github.yanglong.demo.config.freemarker;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import java.util.HashMap;
 import java.util.Properties;
+
+import javax.annotation.PostConstruct;
+
+import io.github.yanglong.demo.config.shiro.tags.ShiroTags;
 
 /**
  * functional describe:
@@ -20,11 +24,15 @@ import java.util.Properties;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "ftlviewcofing")
 public class FreemarkerViewConfig {
+    @Autowired
+    private FreeMarkerViewResolver freeMarkerViewResolver;
+    @Autowired
+    private freemarker.template.Configuration configuration;
     /**
      * freemarker宏 静态方法导入配置
      */
-    private HashMap<String,String> staticAttrabutes;
-    private HashMap<String,String> attrabutes;
+    private HashMap<String,String> staticAttributes;
+    private HashMap<String,String> attributes;
     private boolean cache;
     private int cacheLimit=0;
     private String prefix="";
@@ -39,14 +47,14 @@ public class FreemarkerViewConfig {
      * 配置freemarker视图解析器
      * @return viewResolver
      */
-    @Bean(name = "freeMarkerViewResolver")
-    public FreeMarkerViewResolver freeMarkerViewResolver(){
-        FreeMarkerViewResolver freeMarkerViewResolver=new FreeMarkerViewResolver();
+    @PostConstruct
+    public void configFreemarkerView(){
+        configuration.setSharedVariable("shiro", new ShiroTags());
         freeMarkerViewResolver.setViewClass(org.springframework.web.servlet.view.freemarker.FreeMarkerView.class);
-        freeMarkerViewResolver.setAttributesMap(staticAttrabutes);
-        if(!CollectionUtils.isEmpty(attrabutes)) {
+        freeMarkerViewResolver.setAttributesMap(staticAttributes);
+        if(!CollectionUtils.isEmpty(attributes)) {
             Properties properties = new Properties();
-            properties.putAll(attrabutes);
+            properties.putAll(attributes);
             freeMarkerViewResolver.setAttributes(properties);
         }
         //是否启用缓存
@@ -63,23 +71,22 @@ public class FreemarkerViewConfig {
         freeMarkerViewResolver.setExposeRequestAttributes(exposeRequestAttributes);
         freeMarkerViewResolver.setExposeSessionAttributes(exposeSessionAttributes);
         freeMarkerViewResolver.setOrder(order);
-        return freeMarkerViewResolver;
     }
 
-    public HashMap<String, ?> getStaticAttrabutes() {
-        return staticAttrabutes;
+    public HashMap<String, ?> getStaticAttributes() {
+        return staticAttributes;
     }
 
-    public void setStaticAttrabutes(HashMap<String, String> staticAttrabutes) {
-        this.staticAttrabutes = staticAttrabutes;
+    public void setStaticAttributes(HashMap<String, String> staticAttributes) {
+        this.staticAttributes = staticAttributes;
     }
 
-    public HashMap<String, String> getAttrabutes() {
-        return attrabutes;
+    public HashMap<String, String> getAttributes() {
+        return attributes;
     }
 
-    public void setAttrabutes(HashMap<String, String> attrabutes) {
-        this.attrabutes = attrabutes;
+    public void setAttributes(HashMap<String, String> attributes) {
+        this.attributes = attributes;
     }
 
     public boolean isCache() {

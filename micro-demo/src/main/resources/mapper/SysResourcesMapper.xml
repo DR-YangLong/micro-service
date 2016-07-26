@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="io.github.yanglong.demo.model.SysResourcesMapper" >
-  <resultMap id="BaseResultMap" type="com.webarch.model.SysResources" >
+<mapper namespace="io.github.yanglong.demo.dao.SysResourcesMapper" >
+  <resultMap id="BaseResultMap" type="io.github.yanglong.demo.model.SysResources" >
     <id column="res_id" property="resId" jdbcType="INTEGER" />
     <result column="res_url" property="resUrl" jdbcType="VARCHAR" />
     <result column="res_creater" property="resCreater" jdbcType="VARCHAR" />
@@ -22,7 +22,7 @@
     delete from sys_resources
     where res_id = #{resId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.webarch.model.SysResources" >
+  <insert id="insert" parameterType="io.github.yanglong.demo.model.SysResources" >
     insert into sys_resources (res_id, res_url, res_creater, 
       res_mark, res_time, res_status
       )
@@ -30,7 +30,7 @@
       #{resMark,jdbcType=VARCHAR}, #{resTime,jdbcType=TIMESTAMP}, #{resStatus,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.webarch.model.SysResources" >
+  <insert id="insertSelective" parameterType="io.github.yanglong.demo.model.SysResources" >
     insert into sys_resources
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="resId != null" >
@@ -73,7 +73,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.webarch.model.SysResources" >
+  <update id="updateByPrimaryKeySelective" parameterType="io.github.yanglong.demo.model.SysResources" >
     update sys_resources
     <set >
       <if test="resUrl != null" >
@@ -94,7 +94,7 @@
     </set>
     where res_id = #{resId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.webarch.model.SysResources" >
+  <update id="updateByPrimaryKey" parameterType="io.github.yanglong.demo.model.SysResources" >
     update sys_resources
     set res_url = #{resUrl,jdbcType=VARCHAR},
       res_creater = #{resCreater,jdbcType=VARCHAR},
@@ -105,7 +105,7 @@
   </update>
 
   <!--一次性查询权限的字符串 -->
-  <resultMap id="PrivilegeResultMap" type="com.webarch.model.PrivilegeModel">
+  <resultMap id="PrivilegeResultMap" type="io.github.yanglong.demo.model.PrivilegeModel">
     <result column="url" property="resUrl" jdbcType="VARCHAR"/>
     <collection property="roleName" javaType="java.util.ArrayList" ofType="java.lang.String">
       <result column="role"/>

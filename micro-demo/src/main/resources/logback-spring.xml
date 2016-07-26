@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <descript>modified by YangLong [410357434@163.com] at 2015/5/18</descript>
-
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%5p %d %C: %m%n</pattern>
@@ -18,7 +16,13 @@
         </encoder>
     </appender>-->
 
+    <logger name="io.github.yanglong.demo.dao" level="DEBUG">
+        <appender-ref ref="console"/>
+    </logger>
     <logger name="java.sql.Connection" level="DEBUG">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org.apache.ibatis.jdbc.ScriptRunner" level="DEBUG">
         <appender-ref ref="console"/>
     </logger>
     <logger name="java.sql.Statement" level="DEBUG">
@@ -27,10 +31,7 @@
     <logger name="java.sql.PreparedStatement" level="DEBUG">
         <appender-ref ref="console"/>
     </logger>
-    <logger name="java.sql.ResultSet" level="DEBUG">
-        <appender-ref ref="console"/>
-    </logger>
-    <logger name="com.alibaba.druid" level="DEBUG">
+    <logger name="java.sql.ResultSet"  level="DEBUG">
         <appender-ref ref="console"/>
     </logger>
     <root level="ERROR">

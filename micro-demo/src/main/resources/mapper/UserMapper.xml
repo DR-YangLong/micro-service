@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="io.github.yanglong.demo.model.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.webarch.model.User" >
+<mapper namespace="io.github.yanglong.demo.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="io.github.yanglong.demo.model.User" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="username" property="username" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
@@ -22,13 +22,13 @@
     delete from user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.webarch.model.User" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="io.github.yanglong.demo.model.User" useGeneratedKeys="true" keyProperty="id">
     insert into user (id, username, password, 
       roles,perms, status)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{roles,jdbcType=VARCHAR}, #{perms,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.webarch.model.User" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="io.github.yanglong.demo.model.User" useGeneratedKeys="true" keyProperty="id">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -71,7 +71,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.webarch.model.User" >
+  <update id="updateByPrimaryKeySelective" parameterType="io.github.yanglong.demo.model.User" >
     update user
     <set >
       <if test="username != null" >
@@ -92,7 +92,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.webarch.model.User" >
+  <update id="updateByPrimaryKey" parameterType="io.github.yanglong.demo.model.User" >
     update user
     set username = #{username,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},

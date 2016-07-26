@@ -1,11 +1,11 @@
 <html>
 <head>
-<@macro.header />
+<#--<@macro.header />-->
 </head>
 <body>
 
 <#if loginResult?exists>
-<div class="error">${loginResult.msg}</div>
+<div class="error">${loginResult.msg!""}</div>
 </#if>
 <form action="" method="post">
     用户名：<input type="text" name="username" value="<@shiro.principal/>"><br/>
