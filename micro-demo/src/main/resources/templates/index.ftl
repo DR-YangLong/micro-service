@@ -4,6 +4,6 @@
     <meta charset="utf-8"/>
 </head>
 <body>
-登录成功
+<@shiro.principal/>登录成功
 </body>
 </html>
