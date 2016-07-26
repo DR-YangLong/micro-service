@@ -3,7 +3,6 @@ MySQL Database - shiro
 *********************************************************************
 */
 
-
 /*!40101 SET NAMES utf8 */;
 
 /*!40101 SET SQL_MODE=''*/;
@@ -16,23 +15,11 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`shiro` /*!40100 DEFAULT CHARACTER SET u
 
 USE `shiro`;
 DROP TABLE IF EXISTS `sys_permission`;
-
-CREATE TABLE `sys_permission` (
-  `perm_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `perm_name` VARCHAR(10) NOT NULL COMMENT '编号名称',
-  `perm_mark` VARCHAR(256) DEFAULT NULL COMMENT '权限描述',
-  `perm_creater` VARCHAR(30) DEFAULT NULL COMMENT '创建人',
-  `perm_time` DATETIME DEFAULT NULL COMMENT '创建时间',
-  `perm_status` CHAR(1) NOT NULL DEFAULT '0' COMMENT '启用标记：0启用，1失效',
-  PRIMARY KEY (`perm_id`),
-  UNIQUE KEY `uq_sys_perm_name` (`perm_name`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='系统权限表';
-
-/*Data for the table `sys_permission` */
-
-/*Table structure for table `user` */
-
 DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `sys_resources`;
+DROP TABLE IF EXISTS `sys_role`;
+DROP TABLE IF EXISTS `sys_res_perm`;
+DROP TABLE IF EXISTS `sys_res_role`;
 
 CREATE TABLE `user` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -45,9 +32,16 @@ CREATE TABLE `user` (
   UNIQUE KEY `unique_username` (`username`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `sys_resources` */
-
-DROP TABLE IF EXISTS `sys_resources`;
+CREATE TABLE `sys_permission` (
+  `perm_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `perm_name` VARCHAR(10) NOT NULL COMMENT '编号名称',
+  `perm_mark` VARCHAR(256) DEFAULT NULL COMMENT '权限描述',
+  `perm_creater` VARCHAR(30) DEFAULT NULL COMMENT '创建人',
+  `perm_time` DATETIME DEFAULT NULL COMMENT '创建时间',
+  `perm_status` CHAR(1) NOT NULL DEFAULT '0' COMMENT '启用标记：0启用，1失效',
+  PRIMARY KEY (`perm_id`),
+  UNIQUE KEY `uq_sys_perm_name` (`perm_name`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='系统权限表';
 
 CREATE TABLE `sys_resources` (
   `res_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -60,10 +54,6 @@ CREATE TABLE `sys_resources` (
 ) ENGINE=INNODB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='系统资源表，存放系统的URL地址';
 
 
-/*Table structure for table `sys_role` */
-
-DROP TABLE IF EXISTS `sys_role`;
-
 CREATE TABLE `sys_role` (
   `role_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
   `role_name` VARCHAR(10) NOT NULL COMMENT '角色名称',
@@ -75,9 +65,6 @@ CREATE TABLE `sys_role` (
   UNIQUE KEY `uq_sys_role_name` (`role_name`)
 ) ENGINE=INNODB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='系统角色表';
 
-/*Table structure for table `sys_res_perm` */
-
-DROP TABLE IF EXISTS `sys_res_perm`;
 
 CREATE TABLE `sys_res_perm` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -89,8 +76,6 @@ CREATE TABLE `sys_res_perm` (
   CONSTRAINT `FK_Reference_3` FOREIGN KEY (`res_id`) REFERENCES `sys_resources` (`res_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`perm_id`) REFERENCES `sys_permission` (`perm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='系统资源权限表';
-
-DROP TABLE IF EXISTS `sys_res_role`;
 
 CREATE TABLE `sys_res_role` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
