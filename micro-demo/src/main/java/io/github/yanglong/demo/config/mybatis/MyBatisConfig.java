@@ -6,6 +6,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -26,12 +28,14 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableTransactionManagement
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = "mybatis")
 public class MyBatisConfig implements TransactionManagementConfigurer{
     private static final Logger log= LoggerFactory.getLogger(MyBatisConfig.class);
     @Autowired
     private DataSource dataSource;
     private String typeAliasesPackage="io.github.yanglong.demo.model";
-    private String mapperLocations="classpath**:*/*Mapper.xml";
+    private String mapperLocations="classpath:mapper/*Mapper.xml";
 
     @Bean(name = "sqlSessionFactory")
     public SqlSessionFactory sqlSessionFactoryBean() {

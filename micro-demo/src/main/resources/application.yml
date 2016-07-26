@@ -28,18 +28,15 @@ spring:
 freemarker:
     templateLoaderPath: "classpath:/template"
     properties:
-        - name: "auto_import"
-          value: "/common/commonMacros.ftl as macro"
+        auto_import: "/common/commonMacros.ftl as macro"
 
 ftlviewcofing:
     #静态工具配置
     staticAttrabutes:
-        - name: "StringUtil"
-          value: "freemarker.template.utility.StringUtil"
+        StringUtil: "freemarker.template.utility.StringUtil"
     #属性配置
     attrabutes:
-        - name: ""
-          value: ""
+        name:  ""
     cache: "false"
     cacheLimit: "0"
     suffix: ".ftl"
