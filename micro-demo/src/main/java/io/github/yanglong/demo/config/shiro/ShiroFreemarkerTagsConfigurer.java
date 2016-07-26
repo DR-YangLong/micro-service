@@ -30,7 +30,7 @@ import io.github.yanglong.demo.config.shiro.tags.ShiroTags;
  * @author DR.YangLong
  * @version 1.0  datetime:2014/12/10 16:06
  */
-public class ShiroFreemarkTagsConfigurer extends FreeMarkerConfigurer {
+public class ShiroFreemarkerTagsConfigurer extends FreeMarkerConfigurer {
     @Override
     public void afterPropertiesSet() throws IOException, TemplateException {
         super.afterPropertiesSet();

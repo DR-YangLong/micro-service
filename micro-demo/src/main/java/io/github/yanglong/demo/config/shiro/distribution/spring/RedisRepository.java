@@ -45,7 +45,7 @@ public class RedisRepository<K,V> implements DistributeCacheRpository<K,V> {
     private static final Logger logger= LoggerFactory.getLogger(RedisRepository.class);
     private static final String REDIS_PREFIX_REPO="dr_redis_repo:";
     /**
-     * redis spring template{@link org.springframework.data.redis.core.RedisTemplate}
+     * redis spring templates{@link org.springframework.data.redis.core.RedisTemplate}
      */
     private RedisTemplate<String,V> redisTemplate;
 

@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import java.util.HashMap;
@@ -22,10 +23,11 @@ public class FreemarkerViewConfig {
     /**
      * freemarker宏 静态方法导入配置
      */
-    private HashMap<String,?> staticAttrabutes;
-    private HashMap<?,?> attrabutes;
+    private HashMap<String,String> staticAttrabutes;
+    private HashMap<String,String> attrabutes;
     private boolean cache;
     private int cacheLimit=0;
+    private String prefix="";
     private String suffix=".ftl";
     private String contentType="text/html;charset=UTF-8";
     private String requestContextAttribute="request";
@@ -37,19 +39,22 @@ public class FreemarkerViewConfig {
      * 配置freemarker视图解析器
      * @return viewResolver
      */
-    @Bean(name = "ftlViewResolver")
+    @Bean(name = "freeMarkerViewResolver")
     public FreeMarkerViewResolver freeMarkerViewResolver(){
         FreeMarkerViewResolver freeMarkerViewResolver=new FreeMarkerViewResolver();
         freeMarkerViewResolver.setViewClass(org.springframework.web.servlet.view.freemarker.FreeMarkerView.class);
         freeMarkerViewResolver.setAttributesMap(staticAttrabutes);
-        Properties properties=new Properties();
-        properties.putAll(attrabutes);
-        freeMarkerViewResolver.setAttributes(properties);
+        if(!CollectionUtils.isEmpty(attrabutes)) {
+            Properties properties = new Properties();
+            properties.putAll(attrabutes);
+            freeMarkerViewResolver.setAttributes(properties);
+        }
         //是否启用缓存
         freeMarkerViewResolver.setCache(cache);
         //缓存刷新间隔
         freeMarkerViewResolver.setCacheLimit(cacheLimit);
-        //木板后缀
+        //模板前后缀
+        freeMarkerViewResolver.setPrefix(prefix);
         freeMarkerViewResolver.setSuffix(suffix);
         //设置编码
         freeMarkerViewResolver.setContentType(contentType);
@@ -65,15 +70,15 @@ public class FreemarkerViewConfig {
         return staticAttrabutes;
     }
 
-    public void setStaticAttrabutes(HashMap<String, ?> staticAttrabutes) {
+    public void setStaticAttrabutes(HashMap<String, String> staticAttrabutes) {
         this.staticAttrabutes = staticAttrabutes;
     }
 
-    public HashMap<?, ?> getAttrabutes() {
+    public HashMap<String, String> getAttrabutes() {
         return attrabutes;
     }
 
-    public void setAttrabutes(HashMap<?, ?> attrabutes) {
+    public void setAttrabutes(HashMap<String, String> attrabutes) {
         this.attrabutes = attrabutes;
     }
 
@@ -147,5 +152,13 @@ public class FreemarkerViewConfig {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }

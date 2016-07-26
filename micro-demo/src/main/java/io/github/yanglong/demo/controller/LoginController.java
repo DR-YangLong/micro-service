@@ -96,7 +96,7 @@ public class LoginController {
         if (result.isSuccess()) {
             //TODO 登录成功后跳转
             //默认跳转地址
-            String viewName = "/passport/center/index";
+            String viewName = "/index";
             //请求登录页前的地址
             SavedRequest savedRequest = (SavedRequest) subject.getSession().getAttribute("shiroSavedRequest");
             if (savedRequest != null) {
