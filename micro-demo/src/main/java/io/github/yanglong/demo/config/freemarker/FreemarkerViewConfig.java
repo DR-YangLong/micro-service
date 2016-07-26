@@ -33,6 +33,7 @@ public class FreemarkerViewConfig {
      */
     private HashMap<String,String> staticAttributes;
     private HashMap<String,String> attributes;
+    private HashMap<String,String> autoImports;
     private boolean cache;
     private int cacheLimit=0;
     private String prefix="";
@@ -50,6 +51,7 @@ public class FreemarkerViewConfig {
     @PostConstruct
     public void configFreemarkerView(){
         configuration.setSharedVariable("shiro", new ShiroTags());
+        configuration.setAutoImports(autoImports);
         freeMarkerViewResolver.setViewClass(org.springframework.web.servlet.view.freemarker.FreeMarkerView.class);
         freeMarkerViewResolver.setAttributesMap(staticAttributes);
         if(!CollectionUtils.isEmpty(attributes)) {
@@ -167,5 +169,29 @@ public class FreemarkerViewConfig {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    public FreeMarkerViewResolver getFreeMarkerViewResolver() {
+        return freeMarkerViewResolver;
+    }
+
+    public void setFreeMarkerViewResolver(FreeMarkerViewResolver freeMarkerViewResolver) {
+        this.freeMarkerViewResolver = freeMarkerViewResolver;
+    }
+
+    public freemarker.template.Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(freemarker.template.Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    public HashMap<String, String> getAutoImports() {
+        return autoImports;
+    }
+
+    public void setAutoImports(HashMap<String, String> autoImports) {
+        this.autoImports = autoImports;
     }
 }

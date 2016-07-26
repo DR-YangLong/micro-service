@@ -1,6 +1,6 @@
 <html>
 <head>
-<#--<@macro.header />-->
+<@macro.header />
 </head>
 <body>
 

@@ -4,6 +4,6 @@
     <meta charset="utf-8"/>
 </head>
 <body>
-<@shiro.principal/>登录成功
+用户id为[<@shiro.principal/>]的用户登录成功
 </body>
 </html>

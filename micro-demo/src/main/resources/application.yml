@@ -29,7 +29,6 @@ spring:
     freemarker:
       template-loader-path: "classpath:templates"
       settings:
-          auto_import: "/common/commonMacros.ftl as macro"
           tag_syntax: "auto_detect"
           template_update_delay: "0"
           defaultEncoding: "UTF-8"
@@ -58,6 +57,9 @@ ftlviewcofing:
     exposeRequestAttributes: "true"
     exposeSessionAttributes: "true"
     order: "0"
+    #宏定义
+    autoImports:
+        macro: "/common/commonMacros.ftl"
 mybatis:
     #mapper接口包
     basePackage: "io.github.yanglong.demo.dao"
