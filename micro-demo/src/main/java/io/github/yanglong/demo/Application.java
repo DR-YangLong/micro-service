@@ -7,6 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import io.github.yanglong.demo.config.CusBanner;
+
 /**
  * package: springboot.simple <br/>
  * functional describe:程序启动入口，如果要将应用转为war部署，需要继承{@link org.springframework.boot.context.web.SpringBootServletInitializer}<br/>
@@ -41,6 +43,7 @@ public class Application {
         System.out.println("*********************正在启动*********************************");
         //SpringApplication.run(springboot.simple.ServerStart.class,args);
         SpringApplication application = new SpringApplication(Application.class);
+        application.setBanner(new CusBanner());
         application.run(args);
         System.out.println("*********************启动成功*********************************");
     }
